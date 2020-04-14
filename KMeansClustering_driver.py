@@ -25,9 +25,10 @@ while (not np.array_equal(old_class,new_class)):
 
     
     #update centroids
-    new_cent_g, new_cent_h = kmc.updateCentroids(glucose,hemoglobin,new_class,k)
+    centroid_g, centroid_h = kmc.updateCentroids(glucose,hemoglobin,new_class,k)
 
 
 for i in range(k):
-    print('Centroid ', i+1, ' : ', int(new_cent_g[i]), int(new_cent_h[i]))
+    print('Centroid ', i+1, ' : ', int(centroid_g[i]), int(centroid_h[i]))
     
+kmc.graphingKMeans(glucose,hemoglobin,new_class,centroid_g,centroid_h)

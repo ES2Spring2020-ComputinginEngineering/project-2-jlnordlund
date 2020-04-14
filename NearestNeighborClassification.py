@@ -140,39 +140,41 @@ def graphTestCase(newglucose,newhemoglobin,glucose,hemoglobin,classifications):
 #             values, array of all hemoglobin values, and array of classifications
 # return:     classification (0 or 1)
 def kNearestNeighborClassifier(k,newglucose,newhemoglobin,glucose,hemoglobin,classification):
-    k_nearest = np.zeros([0,k])
+    k_nearest = []
     distances = calculateDistanceArray(newglucose,newhemoglobin,glucose,hemoglobin)
-    
-    for i in range(len(distances)):
+    for i in range(k):
+        k_nearest = np.append(k_nearest,i)
+    for i in range(k,len(distances)):
         for j in range(k):
-            if (distances[i] < distances[k_nearest[j]]):
+            if distances[i] < distances[j]:
                 k_nearest[j] = i
+                break
      
     sum_class = 0           
     for i in range(k):
-       sum_class = sum_class + classification[k_nearest[i]]
-      
-    return sum_class/k
+       index = int(k_nearest[i])
+       sum_class = sum_class + classification[index]
+    avg = sum_class/k
+    
+    if avg >= 0.5:
+        return 1
+    return 0
 
 # MAIN SCRIPT
 ##############################################################################
 glucose, hemoglobin, classification = openckdfile()
-
+k = int(input('K value: '))
 
 print('Graphing normalized data...')
-data = normalizeData(glucose,hemoglobin)
-glucose        = data[0]
-hemoglobin     = data[1]
+glucose, hemoglobin = normalizeData(glucose,hemoglobin)
 graphData(glucose,hemoglobin,classification)
 
-tester = createTestCase()
-newglucose    = tester[0]
-newhemoglobin = tester[1]
-test_normalized = normalizePoint(newglucose,newhemoglobin)
-newglucose      = test_normalized[0]
-newhemoglobin   = test_normalized[1]
-newclass        = nearestNeighborClassifier(newglucose,newhemoglobin,glucose,hemoglobin,classification)
+newglucose, newhemoglobin = createTestCase()
+newglucose, newhemoglobin = normalizePoint(newglucose,newhemoglobin)
+newclass1 = nearestNeighborClassifier(newglucose,newhemoglobin,glucose,hemoglobin,classification)
+newclass2 = kNearestNeighborClassifier(k,newglucose,newhemoglobin,glucose,hemoglobin,classification)
 
 print('Graphing data with random test case')
 graphTestCase(newglucose,newhemoglobin,glucose,hemoglobin,classification)
-print('Classification = ', newclass)
+print('Nearest Neighbor Classification = ', newclass1)
+print('K Nearest Neighbor Classification = ', newclass2)

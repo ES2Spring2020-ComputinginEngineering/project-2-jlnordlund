@@ -86,3 +86,20 @@ def updateCentroids(glucose,hemoglobin,classification,k):
         
     return cent_g,cent_h
 
+
+# function:   graphingKMeans
+# purpose:    graphs clusters and data
+# parameters: glucose array, hemoglobin array, classification array, centroid data
+# return:     void
+#
+# this code is a modification of the code found on the spec 
+def graphingKMeans(glucose, hemoglobin, assignment, cent_g, cent_h):
+    plt.figure()
+    for i in range(int(assignment.max()+1)):
+        rcolor = np.random.rand(3,)
+        plt.plot(glucose[assignment==i],hemoglobin[assignment==i], ".", label = "Class " + str(i), color = rcolor)
+        plt.plot(cent_g, cent_h, "D", label = "Centroid " + str(i), color = rcolor)
+    plt.xlabel("Hemoglobin")
+    plt.ylabel("Glucose")
+    plt.legend()
+    plt.show()
